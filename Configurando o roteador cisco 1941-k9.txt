@@ -3,22 +3,21 @@
   Caso esqueça a senha do roteador siga esse passa a passa para recuperar a senha do seu roteador cisco 1941-k9.
 
   Para resetar a senha do roteador cisco 1941/k9. Se o comando Cltl-Break (putty) ou Alt-B (teraterm) não funcionar, somente removendo a memória flash, para iniciar o modo ROMMON. Desligue o roteador no botão, remova a memória flash, ligue o roteador e repita o comando Cltl-Break (putty) ou Alt-B (teraterm) para iniciar o modo ROMMON, iniciando o modo rommon, insira novamente a memória flash, com o equipamento ligado, em:
-    • rommon 1 => digite: confreg 0x2142. 
-    • rommon 2 => digite: reset.
+    • rommon 1 => digite: confreg 0x2142 
+    • rommon 2 => digite: reset
   Note que o roteador irá reiniciar, mais irá ignora a configuração salva na NVRAM. Digite “no” depois de cada pergunta da configuração ou pressione Ctrl-C para pular o procedimento inicial de configuração. Após reiniciar completamente, irá entrar com o nome: 
     • Router => entre com o comando enable
-    • enable secret => <senha> <= digite sua senha aqui.
-    • line con 0 => password <senha> <= digite sua senha aqui.
-    • login => exit.
-    • line vty 0 4 => password <senha> <= digite sua senha aqui.
-    • login => exit.
+    • enable secret => <senha> <= digite sua senha aqui
+    • line con 0 => password <senha> <= digite sua senha aqui
+    • login => exit
+    • line vty 0 4 => password <senha> <= digite sua senha aqui
+    • login => exit
   Feito as configurações, salve com o comando:
-    • copy startup-config running-config , e volte o boot como padrão da NVRAM com o comando: 
-    • config-register 0x2102 , irá salvar. 
+    • copy startup-config running-config
+  E volte o boot como padrão da NVRAM com o comando:
+    • config-register 0x2102 , irá salvar
   Reinicie o roteador com o comando:
     • reload
-    
-  Observação: É possível que o provedor solicite o endereço MAC da placa de rede "WAN" para monitorar.
   
   Explicações: 
 
@@ -60,7 +59,8 @@ Configuração PPOE:
     22. Router(config)# access-list 1 permit 192.168.0.0 0.0.0.255
     23. Router(config)# ip route 0.0.0.0 0.0.0.0 dialer 1
 
-Observação: os IP’s e MTU informados a cima e apenas demostração altere de acordo com seu ambiente.
+Observações: Os IP’s e MTU informados a cima e apenas demostração altere de acordo com seu ambiente.
+             É possível que o provedor solicite o endereço MAC da placa de rede "WAN" que nessa configuração seria a: 'interface GigabitEthernet0/0', para fins de monitoramento.
 
 Explicações: 
 
