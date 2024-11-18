@@ -1,0 +1,109 @@
+					Configurando o roteador cisco 1941/k9
+
+  Caso esqueça a senha do roteador siga esse passa a passa para recuperar a senha do seu roteador cisco 1941-k9.
+
+  Para resetar a senha do roteador cisco 1941/k9. Se o comando Cltl-Break (putty) ou Alt-B (teraterm) não funcionar, somente removendo a memória flash, para iniciar o modo ROMMON. Desligue o roteador no botão, remova a memória flash, ligue o roteador e repita o comando Cltl-Break (putty) ou Alt-B (teraterm) para iniciar o modo ROMMON, iniciando o modo rommon, insira novamente a memória flash, com o equipamento ligado, em:
+    • rommon 1 => digite: confreg 0x2142. 
+    • rommon 2 => digite: reset.
+  Note que o roteador irá reiniciar, mais irá ignora a configuração salva na NVRAM. Digite “no” depois de cada pergunta da configuração ou pressione Ctrl-C para pular o procedimento inicial de configuração. Após reiniciar completamente, irá entrar com o nome: 
+    • Router => entre com o comando enable
+    • enable secret => <senha> <= digite sua senha aqui.
+    • line con 0 => password <senha> <= digite sua senha aqui.
+    • login => exit.
+    • line vty 0 4 => password <senha> <= digite sua senha aqui.
+    • login => exit.
+  Feito as configurações, salve com o comando:
+    • copy startup-config running-config , e volte o boot como padrão da NVRAM com o comando: 
+    • config-register 0x2102 , irá salvar. 
+  Reinicie o roteador com o comando:
+    • reload
+    
+  Observação: É possível que o provedor solicite o endereço MAC da placa de rede "WAN" para monitorar.
+  
+  Explicações: 
+
+    • rommon 1 > confreg 0x2142 => Modifica o registro de configuração do roteador para 0x2142. Isso instrui o roteador a ignorar as configurações salvas na NVRAM (startup-config) durante a inicialização. Usado principalmente para recuperar acesso ao roteador quando a senha foi perdida.
+    • rommon 2 > reset => Reinicia o roteador. Durante o próximo boot, o roteador não carregará as configurações salvas, permitindo acesso sem necessidade de senha.
+    • enable => Entra no modo privilegiado. Não será solicitada senha, pois o registro 0x2142 ignorou asconfigurações de senha salvas.
+    • enable secret <password> => Define uma nova senha criptografada para acesso ao modo privilegiado.
+    • line con 0 => Acessa a linha de console (local).
+    • password <password> => Define uma nova senha para o console local.
+    • Login => Exige a senha configurada para acesso ao console.
+    • exit: Sai do modo de configuração do console.
+    • copy startup-config running-config => Restaura as configurações salvas na NVRAM para a memória ativa (running-config), permitindo que você recupere a configuração original.
+    • config-register 0x2102 => Define o registro de configuração para 0x2102, instruindo o roteador a carregar a configuração salva na próxima inicialização.
+    • Reload => Reinicia o roteador para aplicar as alterações. Agora ele carregará as configurações salvas na NVRAM.
+
+Configuração PPOE:
+
+    1. Router# conf t
+    2. Router(config)# interface GigabitEthernet0/1
+    3. Router(config-if)# ip address 192.168.0.1 255.255.255.0
+    4. Router(config-if)# ip nat inside
+    5. Router(config-if)# no shutdown
+    6. Router(config-if)# interface GigabitEthernet0/0
+    7. Router(config-if)# pppoe-client dial-pool-number 1
+    8. Router(config-if)# exit
+    9. Router(config)# interface dialer 1
+    10. Router(config-if)# mtu 1480
+    11. Router(config-if)# encapsulation ppp
+    12. Router(config-if)# ip address negotiated
+    13. Router(config-if)# ppp authentication chap 
+    14. Router(config-if)# ppp chap hostname <adicione o usuário fornecido pelo provedor>
+    15. Router(config-if)# ppp chap password <adicione a senha fornecida pelo provedor>
+    16. Router(config-if)# dialer pool 1 
+    17. Router(config-if)# ip nat outside
+    18. Router(config-if)# dialer-group 1
+    19. Router(config-if)# exit
+    20. 20. Router(config)# dialer-list 1 protocol ip permit
+    21. Router(config)# ip nat inside source list 1 interface dialer1 overload
+    22. Router(config)# access-list 1 permit 192.168.0.0 0.0.0.255
+    23. Router(config)# ip route 0.0.0.0 0.0.0.0 dialer 1
+
+Observação: os IP’s e MTU informados a cima e apenas demostração altere de acordo com seu ambiente.
+
+Explicações: 
+
+1- Configuração da interface de rede local (LAN)
+    • Router(config)# interface GigabitEthernet0/1 => Seleciona a interface GigabitEthernet0/1 para configuração (geralmente usada para LAN).
+    • Router(config-if)# ip address 192.168.0.1 255.255.255.0 => Define o endereço IP da interface LAN como 192.168.0.1 com máscara de sub-rede 255.255.255.0.
+    • Router(config-if)# ip nat inside => Marca essa interface como a origem de endereços internos para NAT.
+    • Router(config-if)# no shutdown => Ativa a interface.
+2- Configuração da interface de rede externa (WAN)
+    • Router(config-if)# interface GigabitEthernet0/0 => Seleciona a interface GigabitEthernet0/0 para configuração (geralmente usada para conexão WAN).
+    • Router(config-if)# pppoe-client dial-pool-number 1 => Configura a interface para usar PPPoE e associa ao pool de discagem 1.
+    • Router(config-if)# exit => Sai do modo de configuração da interface.
+3- Configuração da interface Dialer
+    • Router(config)# interface dialer 1 => Cria e seleciona a interface dialer 1 para configuração PPP.
+    • Router(config-if)# mtu 1480 => Define o tamanho máximo do segmento (MTU) para 1480 bytes, otimizando pacotes PPPoE.
+    • Router(config-if)# encapsulation ppp => Configura o encapsulamento como PPP.
+    • Router(config-if)# ip address negotiated => Permite que o endereço IP seja negociado com o provedor (IP dinâmico).
+    • Router(config-if)# ppp authentication chap => Define o método de autenticação PPP como CHAP (Challenge Handshake Authentication Protocol).
+    • Router(config-if)# ppp chap hostname <usuário passado pelo provedor> => Define o nome de usuário para autenticação PPP CHAP.
+    • Router(config-if)# ppp chap password <senha passada pelo provedor> => Define a senha para autenticação PPP CHAP.
+    • Router(config-if)# dialer pool 1 => Associa a interface dialer ao pool de discagem 1.
+    • Router(config-if)# ip nat outside => Marca essa interface como o destino externo para NAT.
+    • Router(config-if)# dialer-group 1 => Associa a interface dialer ao grupo de discagem 1.
+    • Router(config-if)# exit => Sai do modo de configuração da interface.
+4- Configuração de NAT e regras de acesso
+    • Router(config)# dialer-list 1 protocol ip permit => Permite o tráfego IP no grupo de discagem 1.
+    • Router(config)# ip nat inside source list 1 interface dialer1 overload => Configura o NAT para traduzir endereços da lista de acesso 1 na interface dialer 1, ativando o "overload" (PAT - Port Address Translation).
+    • Router(config)# access-list 1 permit 192.168.0.0 0.0.0.255 => Cria a lista de acesso 1, permitindo tráfego da rede 192.168.0.0/24.
+5- Rota padrão para a Internet
+    • Router(config)# ip route 0.0.0.0 0.0.0.0 dialer 1 => Define uma rota padrão para encaminhar todo o tráfego desconhecido para a interface dialer 1 (saída para a internet).
+
+Comandos básicos:
+    1. Router# show ip interface brief =>  Para verificar o status das interfaces de rede
+    2. Router# write memory => Para gravar na memoria
+    3. Router# default interface GigabitEthernet 0/0 => Para apagar as configurações da placa de rede
+    4. Router# default interface GigabitEthernet 0/1 => Para apagar as configurações da placa de rede
+    5. Router(config)# clock timezone GMT -3 => Para adicionar o Horário de Brasilia
+    6. Router# show clock => Para verificar a data e hora do roteador
+    7. Router(config)# hostname Router => Para alterar/renomear o roteador
+    8. Router# end ou exit => Para sair
+    9. Router> enable => Para entrar no modo de privilégio
+    10. Router# show version => Para exibir a versão do roteador
+    11. Router# copy startup-config running-config => Para copiar as configurações para a memória de execução
+    12. Router# show run => Para exibir as configurações do roteador
+    13. Router# reload => Para reiniciar o roteador
+    14. Router(config-if)# description => Para colocar uma descrição na porta de rede
