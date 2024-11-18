@@ -6,7 +6,7 @@
     • rommon 1 => digite: confreg 0x2142 
     • rommon 2 => digite: reset
   Note que o roteador irá reiniciar, mais irá ignora a configuração salva na NVRAM. Digite “no” depois de cada pergunta da configuração ou pressione Ctrl-C para pular o procedimento inicial de configuração. Após reiniciar completamente, irá entrar com o nome: 
-    • Router => entre com o comando enable
+    • Router => entre com o comando: enable
     • enable secret => <senha> <= digite sua senha aqui
     • line con 0 => password <senha> <= digite sua senha aqui
     • login => exit
