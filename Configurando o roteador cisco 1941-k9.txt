@@ -28,7 +28,7 @@
     • line con 0 => Acessa a linha de console (local).
     • password <password> => Define uma nova senha para o console local.
     • Login => Exige a senha configurada para acesso ao console.
-    • exit: Sai do modo de configuração do console.
+    • exit => Sai do modo de configuração do console.
     • copy startup-config running-config => Restaura as configurações salvas na NVRAM para a memória ativa (running-config), permitindo que você recupere a configuração original.
     • config-register 0x2102 => Define o registro de configuração para 0x2102, instruindo o roteador a carregar a configuração salva na próxima inicialização.
     • Reload => Reinicia o roteador para aplicar as alterações. Agora ele carregará as configurações salvas na NVRAM.
