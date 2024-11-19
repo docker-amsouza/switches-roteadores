@@ -1,0 +1,156 @@
+Configurando o switch 3Com SuperStack 4 Switch 5500-EI PWR 28-Port 
+O 3Com SuperStack 4 Switch 5500-EI PWR 28-Port é um switch de camada 2 e camada 3 (L2/L3).
+
+Acesso via, PuTTY, OpenSSH ou SecureCRT:
+
+    • Speed: "19200"
+    • Serial line: "COM8" <= verifique a porta antes de acessar.
+    • Após entrar no switch, para entrar no modo de configuração global, use o comando => <5500-EI> system-view ou sys
+    • Repare que Prompt muda de <5500-EI> para [5500-EI]
+    • Para definir o nome do switch => [5500-EI] sysname SW_Core <= define o nome do switch como "SW_Core"
+
+Explicações:
+
+    • Speed: "19200" => "Speed" refere-se à taxa de transmissão de dados na conexão serial, também conhecida como baud rate. Valor "19200": O valor 19200 representa a taxa de 19.200 bits por segundo (bps). Essa é uma taxa relativamente baixa e tradicionalmente utilizada para consoles de dispositivos de rede, como switches ou roteadores.
+
+Taxas Comuns:
+
+    • 9600 bps: Taxa mais comum para conexões de console.
+    • 19200 bps: Taxa intermediária, às vezes usada para melhorar a velocidade em conexões de console, mas com a desvantagem de ser mais suscetível a erros em conexões de longa distância.
+    • 38400 bps, 57600 bps, 115200 bps: Taxas mais altas, utilizadas quando se deseja uma comunicação mais rápida (muitas vezes usadas em ambientes de produção ou conectando-se a dispositivos com mais capacidade).
+
+    • Serial line: "COM8" => "Serial line" se refere à porta serial à qual o dispositivo está conectado no computador local. Valor "COM8": Indica que a porta COM8 do computador (geralmente um PC com Windows) está sendo usada para a conexão serial.
+
+Portas Seriais:
+
+    • Em computadores com Windows, as portas seriais são geralmente denominadas COM1, COM2, COM3, etc. "COM8" significa que o dispositivo está conectado à oitava porta serial no sistema. Caso o computador tenha múltiplas portas seriais ou adaptadores USB para serial, as portas podem ser numeradas a partir de COM1 até COMx.
+    
+Para definindo o IP para a VLAN 1:
+
+    • [SW_Core]interface Vlan-interface 1 <= é usado para acessar e configurar uma interface lógica VLAN (Virtual Local Area Network).
+    • [SW_Core-Vlan-Interface]ip address <IP e MASK> <= adicione aqui o IP e Máscara da rede local, por exemplo: "192.168.0.100 255.255.255.0".
+    • [SW_Core]ip route-static 0.0.0.0 0.0.0.0 <GATEWAY> <= adicione aqui ip do gateway da rede local, por exemplo: "0.0.0.0 0.0.0.0 192.168.0.1".
+
+Colocando uma descrição na porta e ajustando a velocidade:
+
+    • [SW_Core] interface ethernet 1/0/1 <=  é usado para acessar e configurar uma interface lógica VLAN (Virtual Local Area Network).
+    • [SW_Core-Ethernet] description <NAME> <= adicione aqui o nome do que se refere a porta, por exemplo: "description Conexão com roteador".
+    • [SW_Core-Ethernet] speed 100 <= define a velocidade da porta Ethernet para 100 Mbps.
+    • [SW_Core-Ethernet] duplex full <= define o modo duplex da porta para full duplex. Modos disponíveis: Full Duplex: Permite transmissão e recepção simultâneas de dados, maximizando o desempenho. Half Duplex: Os dados trafegam em uma única direção por vez, podendo causar colisões em redes antigas.
+    • [SW_Core-Ethernet] quit <=  para sair do modo de configuração da interface e retornar ao modo global.
+    • Após configurar, você pode verificar o status da porta com o comando => [SW_Core] display interface ethernet 1/0/1
+    • E para salvar as configurações de forma permanente => [SW_Core] save 
+Observação: 
+
+    • Deverá repetir esse processo em todas as interfaces sendo utilizadas, apenas altera a porta desejada, exemplo: "[SW_Core] interface ethernet 1/0/1, 1/0/3, 1/0/10, 1/0/20 …"
+
+Explicação "interface ethernet 1/0/1":
+
+    • interface: Este é o comando usado para entrar no modo de configuração de uma interface específica do dispositivo.
+    • ethernet: Especifica que a interface que você está configurando é uma interface Ethernet. Ethernet é o tipo de conexão física usada para redes locais (LANs).
+    • 1/0/1: Este é o identificador da interface Ethernet, que segue a convenção slot/port/subport no caso de switches modulares (com mais de um slot para módulos de portas).
+    • 1: Indica o número do slot ou chassi do dispositivo (normalmente o número de um módulo físico ou chassis).
+    • 0: Indica o número do módulo (em switches modulares, o módulo pode ter múltiplas portas).
+    • 1: Indica o número da porta dentro do módulo ou slot.
+
+Definindo usuário e senha:
+
+    • [SW_Core] local-user <USER> <= adicione aqui o nome do usuário, por exemplo: "3conn".
+    • [SW_Core] service-type telnet terminal level 3 <= é usado para configurar as permissões de um usuário local no switch, permitindo que ele acesse o dispositivo via Telnet e definindo o nível de privilégio desse usuário.
+    • [SW_Core] password cipher <PASSWORD> <= adicione aqui a senha do usuário, por exemplo: "3conn2024-".
+
+Definir acesso via SSH:
+
+    • [SW_Core] rsa local-key-pair create <= cria um par de chaves RSA local no switch, necessário para o funcionamento do SSH.
+    • [SW_Core] confirm to replace them? [Y/N]:Y <= se já houver uma chave RSA gerada anteriormente, ela será substituída.
+    • [SW_Core] Input the bits is the modules [default = 1024]:1024 <= define o comprimento da chave RSA como 1024 bits. (Valores maiores, como 2048 bits, oferecem mais segurança, mas podem impactar o desempenho).
+    • [SW_Core] user-interface vty 0 4 <= define a configuração para as interfaces virtuais (linhas VTY) usadas para conexões remotas. O intervalo 0 4 permite até 5 sessões simultâneas.
+    • [SW_Core] authentication-mode scheme <= habilita o modo de autenticação via usuários locais ou servidores externos.
+    • [SW_Core] protocol inbound ssh <= restringe o protocolo de acesso remoto às conexões SSH (Telnet é desabilitado).
+    • [SW_Core] quit <=  sai do modo de configuração do usuário local.
+    • [SW_Core] local-user 3conn <= cria um usuário chamado 3conn para autenticação local, altere de acordo com seu ambiente.
+    • [SW_Core] password cipher 3conn2024- <= define uma senha criptografada para o usuário, necessário alterar a senha.
+    • [SW_Core] service-type ssh level 3 <= permite que o usuário acesse o switch via SSH com nível de privilégio 3 (geralmente administrador).
+    • [SW_Core] quit <=  Sai do modo de configuração do usuário local.
+    • [SW_Core] ssh authentication-type default all <= define o tipo de autenticação para o SSH. O parâmetro all permite o uso de autenticação por:Usuário/Senha ou Chave pública (se configurada).
+    • [SW_Core] save <= salva as configurações na memória persistente para que sejam mantidas após um reinício.
+    • The configuration will be written to the device  <= o switch solicita confirmação para evitar salvamentos acidentais.
+    • Are you sure? [Y/N]Y <= se você confirmar com "Y", o sistema copia as configurações atuais da RAM para a NVRAM. Se você responder "N", o sistema não salva a configuração, e as alterações serão perdidas no próximo reinício.
+
+Observação: 
+
+    • A mensagem "The configuration will be written to the device. Are you sure? [Y/N]" é exibida ao executar o comando save em um switch ou roteador. Este comando salva as configurações atuais na memória persistente (geralmente chamada de NVRAM ou startup-config) para garantir que as alterações sejam mantidas após um reinício.
+	
+    • Após está configuração, o switch estará habilitado para acesso remoto seguro via SSH. Você poderá conectar-se ao dispositivo usando um cliente SSH, como PuTTY, OpenSSH ou SecureCRT. As credenciais configuradas:
+    1. Usuário: 3conn
+    2. Senha: 3conn2024-
+       
+    • Conecte-se ao switch usando um cliente SSH: ssh 3conn@<IP_DO_SWITCH> <= se configurado corretamente, você será autenticado com as credenciais fornecidas e terá acesso ao dispositivo.
+
+Comandos: 
+
+    • Os comandos para configurá-lo seguem a linha de switches 3Com, com alguns comandos específicos baseados no sistema operacional do dispositivo, que é o 3Com OS.
+
+    1. Ativar ou Desativar a Interface => Ativar: [SW_Core-Ethernet1/0/1] undo shutdown e Desativar: [SW_Core-Ethernet1/0/1] shutdown
+    2. Ativar ou Desativar PoE (Power over Ethernet) se o switch suportar: Para ativar PoE (se disponível na interface) => Ativar PoE em uma interface: [SW_Core] interface ethernet 1/0/1 => [SW_Core-Ethernet1/0/1] poe enable e Desativar PoE em uma interface: [SW_Core] interface ethernet 1/0/1 => [SW_Core-Ethernet1/0/1] poe disable
+    3. Verificar o status do PoE para uma interface específica => [SW_Core] show poe interface ethernet 1/0/1
+    4. Verificar o status do PoE para todas as interfaces => [SW_Core] show poe
+    5. Configuração de Port Security (Segurança de Porta). Para configurar segurança em uma porta Ethernet => [SW_Core-Ethernet1/0/1] port-security enable
+    6. Configurar VLAN (para switches que operam em modo Layer 2). Para associar a interface a uma VLAN específica => [SW_Core-Ethernet1/0/1] port link-type access => [SW_Core-Ethernet1/0/1] port default vlan 10
+    7. Configurar VLAN em uma interface (modo trunk) => [SW_Core-Ethernet1/0/1] port link-type trunk => [SW_Core-Ethernet1/0/1] port trunk allow-pass vlan 10,20,30...
+    8. Configuração de VLAN => [SW_Core] vlan 10 => [SW_Core-vlan10] description "VLAN de administração" => 
+    9. Atribuir uma porta a uma VLAN => [SW_Core] interface ethernet 1/0/1 => [SW_Core-Ethernet1/0/1] port default vlan 10
+    10. Exibir todas as VLANs configuradas => [SW_Core] show vlan
+    11. Roteamento (para switches Layer 3) => [SW_Core] ip routing
+    12. Configurar uma interface VLAN com IP (para VLAN de gerenciamento) => [SW_Core] interface vlan 10 => [SW_Core-Vlan10] ip address 192.168.1.1 255.255.255.0 => [SW_Core-Vlan10] undo shutdown
+    13. Configurar um gateway padrão => [SW_Core-vlan10] ip default-gateway 192.168.1.254
+    14. Exibir informações de roteamento => [SW_Core] show ip route
+    15. Exibir a configuração atual do switch => [SW_Core] show running-config
+    16. Exibir o status das interfaces => [SW_Core] show interface status
+    17. Exibir o status da VLAN => [SW_Core] show vlan brief
+    18. Exibir estatísticas de tráfego para uma interface => [SW_Core] show interface ethernet 1/0/1 statistics
+    19. Verificar o uso da CPU e da memória => [SW_Core] show system
+    20. Configurar o servidor NTP (Network Time Protocol) => [SW_Core] ntp server <IP_DO_SERVIDOR> <= adicione aqui o IP do seu servidor NTP, caso tenha, ou adicione um servidor NTP.
+    21. Configurar o SNMP (Simple Network Management Protocol) => [SW_Core] snmp-agent community read-only public => [SW_Core] snmp-agent community read-write private
+
+Observações: 
+
+    • Os IP's, usuários e senhas citados há cima, são apernas demonstrações.
+    • Os comandos acima são usados para configurar e gerenciar um 3Com SuperStack 4 Switch 5500-EI PWR 28-Port, com ênfase na configuração de interfaces Ethernet, VLANs, roteamento (em switches Layer 3), segurança, e monitoramento. Cada comando serve para tarefas específicas de configuração, como acessar uma interface, configurar o gerenciamento remoto, e monitorar o status do switch. Certifique-se de consultar a documentação completa do dispositivo para detalhes adicionais e recursos avançados.
+
+    • Suponhamos que você queira ativar o PoE para as portas Ethernet 1/0/1 e Ethernet 1/0/2:
+    1. <SW_Core> system-view
+    2. [SW_Core] interface ethernet 1/0/1
+    3. [SW_Core-Ethernet1/0/1] poe enable
+    4. [SW_Core] interface ethernet 1/0/2
+    5. [SW_Core-Ethernet1/0/2] poe enable
+
+    • No 3Com SuperStack 4 Switch 5500-EI PWR 28-Port, a potência fornecida por PoE é configurada de forma automática, dependendo das especificações do modelo, e você pode monitorar o consumo de energia via o comando show poe. Não há um comando direto para ajustar manualmente a potência por interface, mas o switch gerencia isso automaticamente para fornecer energia dentro das capacidades do PoE ou PoE+ de cada porta.
+
+Níveis de Privilégio no Switch 3Com. Os switches 3Com geralmente têm três níveis de privilégio:
+       
+Visitante (Visitor)
+    • Privilégio: Nível mais baixo.
+    • Permissões: Apenas acesso de leitura. Pode visualizar informações básicas de status, como:
+    • estatísticas de porta e tabelas de encaminhamento.
+    • Não pode fazer alterações na configuração.
+    • Uso comum: Usuários que precisam monitorar o estado do switch sem realizar alterações.
+
+Operador (Operator)
+    • Privilégio: Nível intermediário.
+    • Permissões: Acesso limitado a comandos administrativos básicos. Pode realizar tarefas de monitoramento e manutenção simples, como:
+    • Ativar ou desativar portas.
+    • Ajustar configurações de VLAN em interfaces.
+    • Verificar logs e mensagens de diagnóstico.
+    • Não pode alterar configurações avançadas ou salvar mudanças na configuração inicial.
+    • Uso comum: Administradores juniores ou operadores de rede responsáveis por tarefas rotineiras.
+
+Administrador (Manager)
+    • Privilégio: Nível mais alto.
+    • Permissões: Acesso total ao switch. Pode realizar qualquer tarefa, incluindo:
+    • Alterar a configuração global do switch.
+    • Configurar VLANs, SNMP, STP, QoS e outras funcionalidades avançadas.
+    • Salvar alterações permanentemente na configuração inicial.
+    • Pode criar e gerenciar usuários e senhas.
+    • Uso comum: Administradores de rede responsáveis pela configuração e manutenção do switch.
+
