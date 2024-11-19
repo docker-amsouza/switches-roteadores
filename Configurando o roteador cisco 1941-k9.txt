@@ -54,7 +54,7 @@ Configuração PPOE:
     17. Router(config-if)# ip nat outside
     18. Router(config-if)# dialer-group 1
     19. Router(config-if)# exit
-    20. 20. Router(config)# dialer-list 1 protocol ip permit
+    20. Router(config)# dialer-list 1 protocol ip permit
     21. Router(config)# ip nat inside source list 1 interface dialer1 overload
     22. Router(config)# access-list 1 permit 192.168.0.0 0.0.0.255
     23. Router(config)# ip route 0.0.0.0 0.0.0.0 dialer 1
