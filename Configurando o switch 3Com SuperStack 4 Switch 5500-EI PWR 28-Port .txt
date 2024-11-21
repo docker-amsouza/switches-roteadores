@@ -154,3 +154,10 @@ Administrador (Manager)
     • Pode criar e gerenciar usuários e senhas.
     • Uso comum: Administradores de rede responsáveis pela configuração e manutenção do switch.
 
+Observação: 
+
+    • Pode ser acessado pela interface web => http://<IP_DO_SWITCH>
+Usuário: 3conn <= usuário pré-cadastrado  nas configurações acima 
+Senha: 3conn2024- <= senha pré-cadastrada nas configurações acima 
+
+    • Para habilitar o POE pela interface web, entre em: “Device” => “POE” => após selecione a porta a qual o aparelho poe está conectado.
