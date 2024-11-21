@@ -159,5 +159,5 @@ Observação:
     • Pode ser acessado pela interface web => http://<IP_DO_SWITCH>
 Usuário: 3conn <= usuário pré-cadastrado  nas configurações acima 
 Senha: 3conn2024- <= senha pré-cadastrada nas configurações acima 
-
-    • Para habilitar o POE pela interface web, entre em: “Device” => “POE” => após selecione a porta a qual o aparelho poe está conectado.
+    • Para habilitar o POE pela interface web, entre em: “Device” => “POE” => "Setup" =>  após selecione a porta a qual o aparelho poe está conectado => "Power State:" => "enable", depois em "Apply" para aplicar a condifuração.
+    • Para desabilitar o POE pela interface web, entre em: “Device” => “POE” => "Setup" =>  após selecione a porta a qual o aparelho poe está conectado => "Power State:" => "disable", depois em "Apply" para aplicar a condifuração.
