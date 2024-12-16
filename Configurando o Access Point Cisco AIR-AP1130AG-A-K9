@@ -1,0 +1,57 @@
+                                        Configurando o Access Point Cisco AIR-AP1130AG-A-K9
+
+	Observação: 
+		A partir do Cisco IOS versão 12.3(8)JA, não há SSID. Você deve criar um SSID antes de habilitar a interface de rádio.
+	
+	Notas:
+    Para reiniciar o Access Point Cisco AIR-AP1130AG-A-K9 como de Fábrica => Pressione o botão "MODE" e desconecte a energia do aparelho sem soltar o botão mode,      re-ligue o cabo de energia e espere o led VERMELHO acender e solte o botão mode.
+    A velocidade de cada antena 2.4 GHz (802.11g): Até 54 Mbps e a 5 GHz (802.11a): Até 54 Mbps, a velocidade real pode ser menor, dependendo da qualidade do sinal, interferência, distâncias entre o dispositivo e o Access Point, e outras condições ambientais.
+
+	1. Teraterm/telnet ou Telnet:
+
+Acesso via telnet: telnet <IP_DO_ACCESS_POINT>
+Acesso via teraterm: <IP_DO_ACCESS_POINT>, marque a caixa telnet
+Usuário Cisco
+Senha: Cisco                <= solicito que altera a senha padrão.
+ap> enable
+Password: Cisco             <= solicito que altera a senha padrão.
+
+    2. Configurando a antena 2.4 GHZ
+
+!ap# configure terminal
+!ap(config)# dot11 ssid <SSID>                               <= altere o SSID, para o nome desejado.
+!ap(config)# interface dot11radio 0 
+!ap(config-if)# ssid <SSID>                                  <= altere o SSID, para o nome desejado.
+!ap(config-if)# encryption mode ciphers aes-ccm
+!ap(config-ssid)# authentication open
+!ap(config-ssid)# authentication key-management wpa version 2
+!ap(config-ssid)# guest-mode
+!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    <= altere o PASSWORD, para a senha desejada.
+!ap(config-if)# no shutdown
+!ap(config-if)# end
+
+    3. Configurando a antena 5 GHZ
+
+!ap# configure terminal
+!ap(config)# dot11 ssid <SSID>_5G                               <= altere o SSID, para o nome desejado.
+!ap(config)# interface dot11radio 1
+!ap(config-if)# ssid <SSID>_5G                                  <= altere o SSID, para o nome desejado.
+!ap(config)# encryption mode ciphers aes-ccm
+!ap(config-ssid)# authentication open
+!ap(config-ssid)# guest-mode
+!ap(config-ssid)# authentication key-management wpa version 2
+!ap(config-ssid)# guest-mode
+!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    <= altere o PASSWORD, para a senha desejada.
+!ap(config-if)# no shutdown 
+!ap(config-if)# end
+!ap# write memory
+!ap# reload
+
+	4. Comandos Básicos:
+
+1. write memory    <= É usado em dispositivos de rede Cisco para salvar a configuração em execução (running-config) na memória NVRAM como configuração de inicialização (startup-config).
+2. show dot11 associations <= Para verificar se a transmissão de beacnos e os SSID's.
+3. reload  <= Para reiniciar o Access Point.
+4. show ip interface brief <= É amplamente usado em dispositivos Cisco para exibir um resumo do status de todas as interfaces configuradas no dispositivo. 
+5. show running-config | include hostname  <= Para garantir que o nome foi alterado corretamente, você pode verificar o prompt.
+6. configure terminal => hostname <NAME> => write memory
