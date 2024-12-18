@@ -12,46 +12,208 @@
 Acesso via telnet: telnet <IP_DO_ACCESS_POINT>
 Acesso via teraterm: <IP_DO_ACCESS_POINT>, marque a caixa telnet
 Usuário Cisco
-Senha: Cisco                <= solicito que altera a senha padrão.
+Senha: Cisco
 ap> enable
-Password: Cisco             <= solicito que altera a senha padrão.
+Password: Cisco							# A senha Cisco é uma senha comum de exemplo, mas você deve sempre usar senhas fortes e únicas para aumentar a segurança.
 
     2. Configurando a antena 2.4 GHZ
 
-!ap# configure terminal
-!ap(config)# dot11 ssid <SSID>                               <= altere o SSID, para o nome desejado.
-!ap(config)# interface dot11radio 0 
-!ap(config-if)# ssid <SSID>                                  <= altere o SSID, para o nome desejado.
-!ap(config-if)# encryption mode ciphers aes-ccm
-!ap(config-ssid)# authentication open
-!ap(config-ssid)# authentication key-management wpa version 2
-!ap(config-ssid)# guest-mode
-!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    <= altere o PASSWORD, para a senha desejada.
-!ap(config-if)# no shutdown
-!ap(config-if)# end
+!ap# configure terminal						# Coloca o dispositivo no modo de configuração global, permitindo a modificação das configurações gerais do dispositivo.
+!ap(config)# dot11 ssid <SSID>					# Esse comando cria ou altera o SSID (nome da rede sem fio). No exemplo, você está criando um SSID chamado <SSID>.
+!ap(config)# interface dot11radio 0				# Esse comando especifica a interface sem fio dot11radio 0, geralmente associada a uma rede de 2.4 GHz.
+!ap(config-if)# ssid <SSID>					# Esse comando associa o SSID criado anteriormente à interface sem fio dot11radio 0, permitindo que a interface sem fio utilize o nome da rede configurado.
+!ap(config-if)# encryption mode ciphers aes-ccm			# Esse comando configura o modo de criptografia para a rede sem fio, usando o algoritmo AES-CCM, que é um algoritmo robusto e seguro para proteger a transmissão de dados sem fio.
+!ap(config-ssid)# authentication open				# O comando authentication open configura uma autenticação aberta, o que significa que qualquer dispositivo pode se conectar à rede sem a necessidade de uma senha. Isso contradiz um pouco o uso de WPA2 com PSK que é configurado logo depois. Para uma rede segura, você normalmente escolheria entre uma rede aberta (sem senha) ou uma rede protegida com WPA2 e PSK (chave compartilhada).
+!ap(config-ssid)# authentication key-management wpa version 2	# Esse comando configura a senha de pré-compartilhamento (PSK) para a rede sem fio usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
+!ap(config-ssid)# guest-mode					# Esse comando habilita o modo de convidados, permitindo o acesso limitado à rede sem fio, geralmente para usuários sem acesso aos recursos internos da rede.
+!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    # Configura a senha de pré-compartilhamento (PSK) para a rede sem fio, usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
+!ap(config-if)# no shutdown					# Esse comando habilita a interface de rede sem fio (ou porta) no ponto de acesso. Se a interface estiver desativada, o comando no shutdown a ativa, permitindo que ela funcione.
+!ap(config-if)# end						# Esse comando encerra a configuração da interface e retorna ao modo EXEC privilegiado, onde você pode executar comandos mais gerais.
 
     3. Configurando a antena 5 GHZ
 
-!ap# configure terminal
-!ap(config)# dot11 ssid <SSID>_5G                               <= altere o SSID, para o nome desejado.
-!ap(config)# interface dot11radio 1
-!ap(config-if)# ssid <SSID>_5G                                  <= altere o SSID, para o nome desejado.
-!ap(config)# encryption mode ciphers aes-ccm
-!ap(config-ssid)# authentication open
-!ap(config-ssid)# guest-mode
-!ap(config-ssid)# authentication key-management wpa version 2
-!ap(config-ssid)# guest-mode
-!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    <= altere o PASSWORD, para a senha desejada.
-!ap(config-if)# no shutdown 
-!ap(config-if)# end
-!ap# write memory
-!ap# reload
+!ap# configure terminal						# Coloca o dispositivo no modo de configuração global, permitindo a modificação das configurações gerais do dispositivo.
+!ap(config)# dot11 ssid <SSID>_5G                               # Esse comando cria ou altera o SSID (nome da rede sem fio). No exemplo, você está criando um SSID chamado <SSID>_5G.
+!ap(config)# interface dot11radio 1				# Esse comando especifica a interface sem fio dot11radio 1, geralmente associada a uma rede de 5 GHz.
+!ap(config-if)# ssid <SSID>_5G                                  # Esse comando associa o SSID criado anteriormente à interface sem fio dot11radio 1, permitindo que a interface sem fio utilize o nome da rede configurado.
+!ap(config)# encryption mode ciphers aes-ccm			# Esse comando configura o modo de criptografia para a rede sem fio, usando o algoritmo AES-CCM, que é um algoritmo robusto e seguro para proteger a transmissão de dados sem fio.
+!ap(config-ssid)# authentication open				# O comando authentication open configura uma autenticação aberta, o que significa que qualquer dispositivo pode se conectar à rede sem a necessidade de uma senha. Isso contradiz um pouco o uso de WPA2 com PSK que é configurado logo depois. Para uma rede segura, você normalmente escolheria entre uma rede aberta (sem senha) ou uma rede protegida com WPA2 e PSK (chave compartilhada).
+!ap(config-ssid)# authentication key-management wpa version 2	# Esse comando ativa o gerenciamento de chave de autenticação com o protocolo WPA2 (Wi-Fi Protected Access 2), que é um dos métodos mais seguros de autenticação e criptografia para redes sem fio.
+!ap(config-ssid)# guest-mode					# Esse comando habilita o modo de convidados, permitindo o acesso limitado à rede sem fio, geralmente para usuários sem acesso aos recursos internos da rede.
+!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    # Esse comando configura a senha de pré-compartilhamento (PSK) para a rede sem fio usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
+!ap(config-if)# no shutdown					# Esse comando habilita a interface de rede sem fio (ou porta) no ponto de acesso. Se a interface estiver desativada, o comando no shutdown a ativa, permitindo que ela funcione.
+!ap(config-if)# end						# Esse comando encerra a configuração da interface e retorna ao modo EXEC privilegiado, onde você pode executar comandos mais gerais.
+!ap# write memory						# Esse comando salva as configurações feitas na memória do dispositivo, garantindo que as alterações persistam após um reinício.
+!ap# reload							# Esse comando reinicia o dispositivo para aplicar as alterações feitas na configuração.
 
 	4. Comandos Básicos:
 
-1. write memory    <= É usado em dispositivos de rede Cisco para salvar a configuração em execução (running-config) na memória NVRAM como configuração de inicialização (startup-config).
-2. show dot11 associations <= Para verificar se a transmissão de beacnos e os SSID's.
-3. reload  <= Para reiniciar o Access Point.
-4. show ip interface brief <= É amplamente usado em dispositivos Cisco para exibir um resumo do status de todas as interfaces configuradas no dispositivo. 
-5. show running-config | include hostname  <= Para garantir que o nome foi alterado corretamente, você pode verificar o prompt.
-6. configure terminal => hostname <NAME> => write memory
+A. Acesso ao dispositivo
+
+    Para acessar o AP, você pode usar Console, Telnet ou SSH:
+
+AP> enable               
+Password:
+AP# configure terminal  
+
+B. Configuração do SSID (nome da rede Wi-Fi)
+
+    Defina um SSID para que os dispositivos possam se conectar:
+
+AP(config)# interface dot11Radio 0
+AP(config-if)# ssid NOME_SSID
+AP(config-if-ssid)# authentication open
+AP(config-if-ssid)# end
+
+AP(config)# interface dot11Radio 1
+AP(config-if)# ssid NOME_SSID_5G
+AP(config-if-ssid)# authentication open
+AP(config-if-ssid)# end
+
+    Para adicionar criptografia WPA2:
+
+AP(config)# interface dot11Radio 0
+AP(config-if)# ssid NOME_SSID
+AP(config-if-ssid)# authentication open
+AP(config-if-ssid)# authentication key-management wpa version 2
+AP(config-if-ssid)# wpa-psk ascii SENHA_SEGURA
+AP(config-if-ssid)# end
+
+AP(config)# interface dot11Radio 1
+AP(config-if)# ssid NOME_SSID_5G
+AP(config-if-ssid)# authentication open
+AP(config-if-ssid)# authentication key-management wpa version 2
+AP(config-if-ssid)# wpa-psk ascii SENHA_SEGURA
+AP(config-if-ssid)# end
+
+C. Configuração de IP estático
+
+    Por padrão, o AP pode tentar obter IP via DHCP. Para configurar IP estático:
+
+AP(config)# interface BVI1              # Interface virtual de ponte
+AP(config-if)# ip address 192.168.0.10 255.255.255.0
+AP(config-if)# exit
+AP(config)# ip default-gateway 192.168.0.1
+AP(config)# end
+
+D. Habilitar interfaces de rádio
+
+    Ative as interfaces sem fio para permitir conexões:
+
+AP(config)# interface dot11Radio 0
+AP(config-if)# no shutdown
+AP(config-if)# exit
+
+AP(config)# interface dot11Radio 1
+AP(config-if)# no shutdown
+AP(config-if)# exit
+
+E. Verificação das interfaces
+
+    Use o comando abaixo para verificar o status das interfaces de rádio:
+
+AP# show interface status
+
+F. Configuração de senha
+
+AP# configure terminal
+AP(config)# username admin privilege 15 password senha123
+AP(config)# end
+AP# write memory
+AP# reload
+
+AP# configure terminal
+AP(config)# username admin privilege 15 secret senhaSegura123
+AP(config)# end
+AP# write memory
+AP# reload
+
+    Observação: PASSWORD <= menos segura.
+                SECRET <= mais segura.
+
+G. Salvar a configuração
+
+    Para salvar as configurações realizadas:
+
+AP# write memory
+
+H. Visualizar configurações atuais
+
+    Para verificar as configurações atuais do AP:
+
+AP# show running-config
+
+I. Reiniciar o AP
+
+    Para reiniciar o Access Point:
+
+AP# reload
+
+J. Comandos de diagnóstico
+
+    Verifique os clientes conectados:
+
+AP# show dot11 associations
+
+    Veja os logs do sistema:
+
+AP# show logging
+
+Verifique a versão do firmware:
+
+    AP# show version
+
+K. Configuração Automática da Potência
+
+    Para permitir que o AP ajuste automaticamente a potência com base no ambiente:
+
+AP# configure terminal
+AP(config)# interface dot11Radio 0  
+AP(config-if)# power local -1				# Este comando ajusta a potência de transmissão da interface sem fio. O parâmetro -1 geralmente indica o nível máximo de potência, ou seja, a potência de transmissão será configurada para o valor mais alto permitido para essa interface no ponto de acesso.
+AP(config-if)# end  
+
+AP# configure terminal
+AP(config)# interface dot11Radio 1  
+AP(config-if)# power local -1				# Este comando ajusta a potência de transmissão da interface sem fio. O parâmetro -1 geralmente indica o nível máximo de potência, ou seja, a potência de transmissão será configurada para o valor mais alto permitido para essa interface no ponto de acesso.
+AP(config-if)# end
+
+L. Configuração Automática do Canal
+
+    Permite que o AP selecione automaticamente o canal menos congestionado:
+
+AP# configure terminal
+AP(config)# interface dot11Radio 0  
+AP(config-if)# channel least-congested				# Quando este comando é executado, o ponto de acesso verifica os canais de rádio disponíveis na faixa de frequências e seleciona automaticamente o canal com menos interferência ou menos congestionado. Isso é útil para evitar conflitos com outras redes sem fio próximas ou outros dispositivos que possam estar utilizando o mesmo canal, como micro-ondas, dispositivos Bluetooth, entre outros.
+AP(config-if)# end  
+
+AP# configure terminal
+AP(config)# interface dot11Radio 1  
+AP(config-if)# channel least-congested				# Quando este comando é executado, o ponto de acesso verifica os canais de rádio disponíveis na faixa de frequências e seleciona automaticamente o canal com menos interferência ou menos congestionado. Isso é útil para evitar conflitos com outras redes sem fio próximas ou outros dispositivos que possam estar utilizando o mesmo canal, como micro-ondas, dispositivos Bluetooth, entre outros. 
+AP(config-if)# end  
+
+M. Verificação da Configuração  
+
+    Use o comando abaixo para visualizar as configurações atuais:
+
+AP# show running-config interface dot11Radio 0			# Isso mostrará as configurações detalhadas para a interface dot11Radio 0 e outras configurações específicas. 
+AP# show running-config interface dot11Radio 1			# Isso mostrará as configurações detalhadas para a interface dot11Radio 1 e outras configurações específicas.
+
+    Para verificar o desempenho do rádio:
+
+AP# show dot11 statistics client-traffic interface dot11Radio 0		# Objetivo exibir estatísticas detalhadas sobre o tráfego de clientes na interface dot11Radio 0
+AP# show dot11 statistics client-traffic interface dot11Radio 1		# Objetivo exibir estatísticas detalhadas sobre o tráfego de clientes na interface dot11Radio 1
+
+N. Alterar o hostname:
+   
+AP# configure terminal
+AP(config)# hostname <NAME> 
+AP(config)# end
+AP# write memory
+
+O. Configuar o snmp:
+
+AP# configure terminal
+AP(config)# snmp-server community public ro
+AP(config)# snmp-server host <IP_DO_SERVIDOR_SNMP> version 2c public
+AP(config)# end
+AP# write memory
