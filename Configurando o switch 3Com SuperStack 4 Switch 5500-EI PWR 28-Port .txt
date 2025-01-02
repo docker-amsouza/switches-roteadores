@@ -82,8 +82,8 @@ Observação:
     • A mensagem "The configuration will be written to the device. Are you sure? [Y/N]" é exibida ao executar o comando save em um switch ou roteador. Este comando salva as configurações atuais na memória persistente (geralmente chamada de NVRAM ou startup-config) para garantir que as alterações sejam mantidas após um reinício.
 	
     • Após está configuração, o switch estará habilitado para acesso remoto seguro via SSH. Você poderá conectar-se ao dispositivo usando um cliente SSH, como PuTTY, OpenSSH ou SecureCRT. As credenciais configuradas:
-    1. Usuário: 3conn
-    2. Senha: 3conn2024-
+    1. Usuário: 3com
+    2. Senha: 3com2024-
        
     • Conecte-se ao switch usando um cliente SSH: ssh 3conn@<IP_DO_SWITCH> <= se configurado corretamente, você será autenticado com as credenciais fornecidas e terá acesso ao dispositivo.
 
@@ -112,6 +112,12 @@ Comandos:
     19. Verificar o uso da CPU e da memória => [SW_Core] show system
     20. Configurar o servidor NTP (Network Time Protocol) => [SW_Core] ntp server <IP_DO_SERVIDOR> <= adicione aqui o IP do seu servidor NTP, caso tenha, ou adicione um servidor NTP.
     21. Configurar o SNMP (Simple Network Management Protocol) => [SW_Core] snmp-agent community read-only public => [SW_Core] snmp-agent community read-write private
+    22. interface Ethernet 1/0/2            # Especifica a interface de rede Ethernet 1/0/2 que será configurado.
+    23. undo port trunk permit vlan 10      # Remove a VLAN 10 da lista de VLANs permitidas na porta do tronco.
+    24. undo port trunk permit vlan 20      # Remove a VLAN 20 da lista de VLANs permitidas na porta do tronco. 
+    25. undo port trunk permit vlan 30      # Remove a VLAN 30 da lista de VLANs permitidas na porta do tronco.
+    26. undo port trunk permit vlan 40      # Remove a VLAN 40 da lista de VLANs permitidas na porta do tronco.
+    27. undo port trunk permit vlan 50      # Remove a VLAN 50 da lista de VLANs permitidas na porta do tronco.
 
 Observações: 
 
@@ -153,6 +159,15 @@ Administrador (Manager)
     • Salvar alterações permanentemente na configuração inicial.
     • Pode criar e gerenciar usuários e senhas.
     • Uso comum: Administradores de rede responsáveis pela configuração e manutenção do switch.
+
+Salvar e verificar a configuração de inicialização
+    1. <SW_Core> system-view
+    2. [SW_Core] save
+	The configuration will be written to the device.
+	Are you sure?[Y/N] Y
+	Please input the file name(*.cfg) (To leave the existing filename unchanged, press Enter): startup.cfg
+    2. [SW_Core] display startup
+	Next main startup saved-configuration file: flash:/startup.cfg		# Isso indica que o arquivo startup.cfg será carregado como o arquivo de configuração principal após o próximo boot.
 
 Observação: 
 
