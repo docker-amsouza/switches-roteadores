@@ -1,0 +1,51 @@
+            Configurando o Cisco Aironet 1100 Series Access Point 
+    
+
+Username:    
+Password: 
+ap>enable                                           # Entra no modo privilegiado, permitindo executar comandos administrativos avançados.
+Password:
+ap#configure terminal                               # Entra no modo de configuração global, onde é possível modificar as configurações do dispositivo.
+Enter configuration commands, one per line.  End with CNTL/Z.
+ap(config-if)#interface Dot11Radio 0                # Seleciona a interface de rádio sem fio específica (neste caso, a interface 0) para configuração.
+ap(config-if)#encryption mode ciphers aes           # Define o método de criptografia para AES, que é seguro e amplamente utilizado para redes WPA/WPA2.
+ap(config)#dot11 ssid Visita                        # Cria ou seleciona um SSID (nome da rede sem fio) chamado "Visita" para configuração.
+ap(config-ssid)#authentication key-management wpa   # Configura o gerenciamento de chaves para WPA, habilitando a segurança baseada em WPA.
+ap(config-ssid)#wpa-psk ascii 0 Visita2025-         # Define a chave pré-compartilhada (senha) para WPA como "Visita2025-". O ascii 0 indica que a senha será fornecida em texto claro no comando.
+ap(config-ssid)#interface Dot11Radio0               # Retorna à configuração da interface de rádio para associar o SSID.
+ap(config-if)#ssid Visita                           # Associa o SSID "Visita" à interface de rádio selecionada.
+ap(config-if)#no shutdown                           # Ativa a interface de rádio para garantir que ela esteja operacional.
+ap(config-if)#exit                                  # Sai do modo de configuração da interface de rádio.
+ap(config)#line vty 0 4                             # Seleciona as linhas virtuais (vty) 0 a 4, que controlam conexões Telnet e SSH.
+ap(config-line)#password SuaSenhaTelnet             # Define a senha para conexões Telnet. Substitua "SuaSenhaTelnet" pela senha desejada.
+ap(config-line)#login                               # Exige a senha configurada para conexões Telnet.
+ap(config-line)#exit                                # Sai da configuração da linha vty.
+ap(config)#hostname AP                              # Define o nome do Access Point como "AP". Substitua "AP" pelo nome desejado.
+AP#write memory                                     # Salva as configurações atuais na memória NVRAM, garantindo que elas persistam após reinicializações.
+AP#reload                                           # Reinicia o dispositivo (Access Point) para aplicar todas as configurações feitas. 
+Proceed with reload? [confirm]                      # Solicita confirmação antes de executar o reinício. Você precisa digitar y (ou pressionar Enter, dependendo da configuração) para confirmar.            
+
+        Se você quiser garantir a segurança via Telnet:
+
+AP#configure terminal                               # Entra no modo de configuração global, onde é possível modificar as configurações do dispositivo.
+AP(config)#enable secret SuaSenhaPrivada            # Define uma senha criptografada (secreta) para o modo privilegiado (enable).
+AP(config)#end                                      # Sai do modo de configuração global e retorna ao modo privilegiado.
+
+        Se você quiser  Monitorar o AP remotamente usando ferramentas SNMP:
+
+AP#configure terminal                                               # Entra no modo de configuração global, onde é possível modificar as configurações do dispositivo.
+AP(config)#snmp-server community public RO                          # Configura uma comunidade SNMP chamada public com permissão de somente leitura (RO - Read-Only).
+AP(config)#snmp-server host 192.168.0.100 traps version 2c public   # Configura o AP para enviar traps SNMP (notificações de eventos) para o servidor SNMP em 192.168.0.100.
+AP(config)#logging buffered 4096                                    # Ativa o logging local no AP, armazenando os logs na memória do dispositivo. 4096: Define o tamanho do buffer de logs em bytes.
+AP(config)#logging console                                          # Ativa a exibição de logs diretamente no console do AP.
+AP(config)#logging trap informational                               # Configura o nível de severidade das mensagens de log enviadas ao servidor de logs (via traps). informational: Inclui eventos de severidade "informativa" ou mais críticos.
+AP(config)#end                                                      # Sai do modo de configuração global e retorna ao modo privilegiado.
+
+        Comandos:
+
+AP#show running-config                              # Exibe as configurações atuais do AP.
+AP#authentication open                              # Configura o método de autenticação aberta para o SSID. Os dispositivos podem conectar sem autenticação inicial.
+AP#show ip interface brief                          # Mostra o estado das interfaces IP do AP.
+AP#ping <endereço_ip>                               # Testa a conectividade entre o AP e outro dispositivo na rede.
+AP(config-ssid)#vlan <ID>                           # Associa o SSID a uma VLAN específica.
+AP#switchport mode trunk                            # Configura a porta Ethernet do AP para transportar múltiplas VLANs.
