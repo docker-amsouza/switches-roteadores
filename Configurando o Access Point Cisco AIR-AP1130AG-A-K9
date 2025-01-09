@@ -18,33 +18,33 @@ Password: Cisco							# A senha Cisco é uma senha comum de exemplo, mas você d
 
     2. Configurando a antena 2.4 GHZ
 
-!ap# configure terminal						# Coloca o dispositivo no modo de configuração global, permitindo a modificação das configurações gerais do dispositivo.
-!ap(config)# dot11 ssid <SSID>					# Esse comando cria ou altera o SSID (nome da rede sem fio). No exemplo, você está criando um SSID chamado <SSID>.
-!ap(config)# interface dot11radio 0				# Esse comando especifica a interface sem fio dot11radio 0, geralmente associada a uma rede de 2.4 GHz.
-!ap(config-if)# ssid <SSID>					# Esse comando associa o SSID criado anteriormente à interface sem fio dot11radio 0, permitindo que a interface sem fio utilize o nome da rede configurado.
-!ap(config-if)# encryption mode ciphers aes-ccm			# Esse comando configura o modo de criptografia para a rede sem fio, usando o algoritmo AES-CCM, que é um algoritmo robusto e seguro para proteger a transmissão de dados sem fio.
-!ap(config-ssid)# authentication open				# O comando authentication open configura uma autenticação aberta, o que significa que qualquer dispositivo pode se conectar à rede sem a necessidade de uma senha. Isso contradiz um pouco o uso de WPA2 com PSK que é configurado logo depois. Para uma rede segura, você normalmente escolheria entre uma rede aberta (sem senha) ou uma rede protegida com WPA2 e PSK (chave compartilhada).
-!ap(config-ssid)# authentication key-management wpa version 2	# Esse comando configura a senha de pré-compartilhamento (PSK) para a rede sem fio usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
-!ap(config-ssid)# guest-mode					# Esse comando habilita o modo de convidados, permitindo o acesso limitado à rede sem fio, geralmente para usuários sem acesso aos recursos internos da rede.
-!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    # Configura a senha de pré-compartilhamento (PSK) para a rede sem fio, usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
-!ap(config-if)# no shutdown					# Esse comando habilita a interface de rede sem fio (ou porta) no ponto de acesso. Se a interface estiver desativada, o comando no shutdown a ativa, permitindo que ela funcione.
-!ap(config-if)# end						# Esse comando encerra a configuração da interface e retorna ao modo EXEC privilegiado, onde você pode executar comandos mais gerais.
+ap# configure terminal						# Coloca o dispositivo no modo de configuração global, permitindo a modificação das configurações gerais do dispositivo.
+ap(config)# dot11 ssid <SSID>					# Esse comando cria ou altera o SSID (nome da rede sem fio). No exemplo, você está criando um SSID chamado <SSID>.
+ap(config)# interface dot11radio 0				# Esse comando especifica a interface sem fio dot11radio 0, geralmente associada a uma rede de 2.4 GHz.
+ap(config-if)# ssid <SSID>					# Esse comando associa o SSID criado anteriormente à interface sem fio dot11radio 0, permitindo que a interface sem fio utilize o nome da rede configurado.
+ap(config-if)# encryption mode ciphers aes-ccm			# Esse comando configura o modo de criptografia para a rede sem fio, usando o algoritmo AES-CCM, que é um algoritmo robusto e seguro para proteger a transmissão de dados sem fio.
+ap(config-ssid)# authentication open				# O comando authentication open configura uma autenticação aberta, o que significa que qualquer dispositivo pode se conectar à rede sem a necessidade de uma senha. Isso contradiz um pouco o uso de WPA2 com PSK que é configurado logo depois. Para uma rede segura, você normalmente escolheria entre uma rede aberta (sem senha) ou uma rede protegida com WPA2 e PSK (chave compartilhada).
+ap(config-ssid)# authentication key-management wpa version 2	# Esse comando configura a senha de pré-compartilhamento (PSK) para a rede sem fio usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
+ap(config-ssid)# guest-mode					# Esse comando habilita o modo de convidados, permitindo o acesso limitado à rede sem fio, geralmente para usuários sem acesso aos recursos internos da rede.
+ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    # Configura a senha de pré-compartilhamento (PSK) para a rede sem fio, usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
+ap(config-if)# no shutdown					# Esse comando habilita a interface de rede sem fio (ou porta) no ponto de acesso. Se a interface estiver desativada, o comando no shutdown a ativa, permitindo que ela funcione.
+ap(config-if)# end						# Esse comando encerra a configuração da interface e retorna ao modo EXEC privilegiado, onde você pode executar comandos mais gerais.
 
     3. Configurando a antena 5 GHZ
 
-!ap# configure terminal						# Coloca o dispositivo no modo de configuração global, permitindo a modificação das configurações gerais do dispositivo.
-!ap(config)# dot11 ssid <SSID>_5G                               # Esse comando cria ou altera o SSID (nome da rede sem fio). No exemplo, você está criando um SSID chamado <SSID>_5G.
-!ap(config)# interface dot11radio 1				# Esse comando especifica a interface sem fio dot11radio 1, geralmente associada a uma rede de 5 GHz.
-!ap(config-if)# ssid <SSID>_5G                                  # Esse comando associa o SSID criado anteriormente à interface sem fio dot11radio 1, permitindo que a interface sem fio utilize o nome da rede configurado.
-!ap(config)# encryption mode ciphers aes-ccm			# Esse comando configura o modo de criptografia para a rede sem fio, usando o algoritmo AES-CCM, que é um algoritmo robusto e seguro para proteger a transmissão de dados sem fio.
-!ap(config-ssid)# authentication open				# O comando authentication open configura uma autenticação aberta, o que significa que qualquer dispositivo pode se conectar à rede sem a necessidade de uma senha. Isso contradiz um pouco o uso de WPA2 com PSK que é configurado logo depois. Para uma rede segura, você normalmente escolheria entre uma rede aberta (sem senha) ou uma rede protegida com WPA2 e PSK (chave compartilhada).
-!ap(config-ssid)# authentication key-management wpa version 2	# Esse comando ativa o gerenciamento de chave de autenticação com o protocolo WPA2 (Wi-Fi Protected Access 2), que é um dos métodos mais seguros de autenticação e criptografia para redes sem fio.
-!ap(config-ssid)# guest-mode					# Esse comando habilita o modo de convidados, permitindo o acesso limitado à rede sem fio, geralmente para usuários sem acesso aos recursos internos da rede.
-!ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    # Esse comando configura a senha de pré-compartilhamento (PSK) para a rede sem fio usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
-!ap(config-if)# no shutdown					# Esse comando habilita a interface de rede sem fio (ou porta) no ponto de acesso. Se a interface estiver desativada, o comando no shutdown a ativa, permitindo que ela funcione.
-!ap(config-if)# end						# Esse comando encerra a configuração da interface e retorna ao modo EXEC privilegiado, onde você pode executar comandos mais gerais.
-!ap# write memory						# Esse comando salva as configurações feitas na memória do dispositivo, garantindo que as alterações persistam após um reinício.
-!ap# reload							# Esse comando reinicia o dispositivo para aplicar as alterações feitas na configuração.
+ap# configure terminal						# Coloca o dispositivo no modo de configuração global, permitindo a modificação das configurações gerais do dispositivo.
+ap(config)# dot11 ssid <SSID>_5G                               # Esse comando cria ou altera o SSID (nome da rede sem fio). No exemplo, você está criando um SSID chamado <SSID>_5G.
+ap(config)# interface dot11radio 1				# Esse comando especifica a interface sem fio dot11radio 1, geralmente associada a uma rede de 5 GHz.
+ap(config-if)# ssid <SSID>_5G                                  # Esse comando associa o SSID criado anteriormente à interface sem fio dot11radio 1, permitindo que a interface sem fio utilize o nome da rede configurado.
+ap(config)# encryption mode ciphers aes-ccm			# Esse comando configura o modo de criptografia para a rede sem fio, usando o algoritmo AES-CCM, que é um algoritmo robusto e seguro para proteger a transmissão de dados sem fio.
+ap(config-ssid)# authentication open				# O comando authentication open configura uma autenticação aberta, o que significa que qualquer dispositivo pode se conectar à rede sem a necessidade de uma senha. Isso contradiz um pouco o uso de WPA2 com PSK que é configurado logo depois. Para uma rede segura, você normalmente escolheria entre uma rede aberta (sem senha) ou uma rede protegida com WPA2 e PSK (chave compartilhada).
+ap(config-ssid)# authentication key-management wpa version 2	# Esse comando ativa o gerenciamento de chave de autenticação com o protocolo WPA2 (Wi-Fi Protected Access 2), que é um dos métodos mais seguros de autenticação e criptografia para redes sem fio.
+ap(config-ssid)# guest-mode					# Esse comando habilita o modo de convidados, permitindo o acesso limitado à rede sem fio, geralmente para usuários sem acesso aos recursos internos da rede.
+ap(config-ssid)# wpa-psk ascii 0 <PASSWORD>                    # Esse comando configura a senha de pré-compartilhamento (PSK) para a rede sem fio usando o WPA2 com uma chave em formato ASCII. O <PASSWORD> deve ser substituído pela senha desejada.
+ap(config-if)# no shutdown					# Esse comando habilita a interface de rede sem fio (ou porta) no ponto de acesso. Se a interface estiver desativada, o comando no shutdown a ativa, permitindo que ela funcione.
+ap(config-if)# end						# Esse comando encerra a configuração da interface e retorna ao modo EXEC privilegiado, onde você pode executar comandos mais gerais.
+ap# write memory						# Esse comando salva as configurações feitas na memória do dispositivo, garantindo que as alterações persistam após um reinício.
+ap# reload							# Esse comando reinicia o dispositivo para aplicar as alterações feitas na configuração.
 
 	4. Comandos Básicos:
 
