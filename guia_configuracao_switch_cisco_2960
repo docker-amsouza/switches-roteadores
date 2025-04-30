@@ -1,0 +1,268 @@
+! ==========================================================
+! Guia de Configuração – Switch Cisco Catalyst 2960 Series
+! ==========================================================
+! AVISO:
+! Este é um exemplo SIMULADO para fins educacionais.
+! Personalize nomes, senhas e endereços IP conforme o ambiente.
+! NÃO utilize senhas reais ou informações de produção neste exemplo.
+! ==========================================================
+
+! -----------------------------
+! Acesso Inicial e Identificação do Switch
+! -----------------------------
+
+Switch>enable
+! Entra no modo privilegiado (enable).
+
+Switch#configure terminal
+! Acessa o modo de configuração global.
+
+Switch(config)#hostname SW_A
+! Define o nome do dispositivo como "SW_A".
+
+SW_A(config)#exit
+! Sai do modo de configuração.
+
+SW_A#show version
+! Exibe informações do sistema: versão IOS, número de série, uptime, etc.
+
+! -----------------------------
+! Criação de Usuário e Acesso SSH/Telnet
+! -----------------------------
+
+SW_A#configure terminal
+! Acessa o modo de configuração global.
+
+SW_A(config)#username usuario privilege 15 secret senha_segura
+! Cria um usuário com privilégio 15 e senha criptografada.
+
+SW_A(config)#enable secret senha_segura
+! Define senha criptografada para o modo privilegiado (enable).
+
+SW_A(config)#line vty 0 15
+! Configura as linhas de acesso remoto (VTY 0 a 15).
+
+SW_A(config-line)#login local
+! Exige login usando os usuários criados localmente.
+
+SW_A(config-line)#transport input ssh telnet
+! Permite conexões via SSH e Telnet (prefira apenas SSH em produção).
+
+SW_A(config-line)#exit
+
+SW_A(config)#ip domain-name exemplo.local
+! Define o nome de domínio necessário para gerar chaves SSH.
+
+SW_A(config)#crypto key generate rsa
+! Gera as chaves RSA para ativar o SSH.
+
+! Escolha o tamanho da chave quando solicitado:
+! How many bits in the modulus [512]: 2048
+
+! Recomenda-se 2048 bits para segurança adequada.
+! Após isso, o SSH será ativado automaticamente.
+
+! -----------------------------
+! Interfaces Trunk – VLAN de Comunicação
+! -----------------------------
+
+SW_A(config)#interface range fastethernet0/1 - 24
+! Seleciona todas as portas FastEthernet para configurar como trunk.
+
+SW_A(config-if-range)#switchport mode trunk
+! Define o modo trunk para permitir múltiplas VLANs.
+
+SW_A(config-if-range)#switchport trunk native vlan 20
+! Define a VLAN 20 como VLAN nativa (sem tag em pacotes).
+
+SW_A(config-if-range)#description Porta trunk VLAN 20
+! Adiciona uma descrição nas interfaces para facilitar a identificação.
+
+SW_A(config-if-range)#exit
+
+SW_A(config)#end
+SW_A#write memory
+! Salva a configuração atual na memória NVRAM.
+
+! -----------------------------
+! Comandos Úteis para Diagnóstico
+! -----------------------------
+
+SW_A#show vlan brief
+! Lista todas as VLANs e as interfaces associadas.
+
+SW_A#show ip interface brief
+! Exibe um resumo das interfaces e endereços IP (se configurado).
+
+SW_A#show mac address-table
+! Mostra os endereços MAC aprendidos nas interfaces.
+
+SW_A#show mac address-table | include Fa0/1
+! Filtra a tabela MAC mostrando apenas os registros da porta Fa0/1.
+
+SW_A#show arp
+! Exibe a tabela ARP com mapeamentos IP-MAC.
+
+SW_A#show interfaces status
+! Mostra o status (up/down, duplex, velocidade) de todas as interfaces.
+
+SW_A#show interface fa0/1
+! Mostra detalhes técnicos da interface Fa0/1.
+
+SW_A#show interface fa0/1 switchport
+! Exibe o modo de comutação e VLAN da porta Fa0/1.
+
+SW_A#show interfaces trunk
+! Lista as interfaces configuradas como trunk e suas VLANs permitidas.
+
+! -----------------------------
+! Notas sobre VLANs Padrão
+! -----------------------------
+
+! As VLANs 1002–1005 são reservadas para protocolos legados (FDDI, Token Ring).
+! Não podem ser removidas e não afetam redes modernas.
+! Podem ser ignoradas em ambientes atuais.
+
+! -----------------------------
+! Configuração de NTP e Fuso Horário
+! -----------------------------
+
+SW_A#configure terminal
+! Acessa o modo de configuração global.
+
+SW_A(config)#ntp server 0.0.0.0
+! Configura um servidor NTP (substituir por IP real do servidor NTP).
+
+SW_A(config)#clock timezone BR -3
+! Define o fuso horário para Brasília (UTC-3).
+
+SW_A(config)#exit
+
+SW_A#show clock
+! Exibe o horário atual do switch (importante para logs e auditoria).
+
+! -----------------------------
+! Criação de VLANs Adicionais
+! -----------------------------
+
+SW_A#configure terminal
+! Acessa o modo de configuração global.
+
+SW_A(config)#vlan 20
+! Cria a VLAN 20.
+
+SW_A(config-vlan)#name REDE_ADMINISTRACAO
+! Nomeia a VLAN 20 para facilitar identificação.
+
+! -----------------------------
+! Descrição de Portas Específicas
+! -----------------------------
+
+SW_A(config)#interface fastethernet 0/2
+! Acessa a porta FastEthernet 0/2.
+
+SW_A(config-if)#description Dispositivo 1 - Porta de Acesso
+! Descreve a função da porta para documentação.
+
+SW_A(config)#interface GigabitEthernet 0/1
+SW_A(config-if)#description Conexão com Switch Core
+! Descreve a conexão principal com outro switch.
+
+SW_A(config)#end
+
+SW_A#show interfaces description
+! Lista todas as descrições das interfaces, útil para identificar conexões.
+
+! -----------------------------
+! SSH Hardening – Segurança no Acesso Remoto
+! -----------------------------
+
+SW_A(config)#ip ssh version 2
+! Força o uso do protocolo SSH versão 2, que é mais seguro do que a versão 1.
+
+SW_A(config)#service password-encryption
+! Ativa a criptografia para senhas em texto claro na configuração (ex: senha de enable ou usuário local).
+
+SW_A(config)#no ip http server
+! Desativa o servidor HTTP embutido, que geralmente não é utilizado e representa risco de segurança.
+
+SW_A(config)#no cdp run
+! (Opcional) Desativa o protocolo CDP – Cisco Discovery Protocol – que pode expor informações da topologia de rede.
+
+
+! -----------------------------
+! VLANs Adicionais – Configuração para Visitantes
+! -----------------------------
+
+SW_A(config)#vlan 30
+! Cria a VLAN 30.
+
+SW_A(config-vlan)#name REDE_VISITANTES
+! Dá um nome descritivo à VLAN 30 para facilitar a identificação.
+
+SW_A(config)#interface range fa0/10 - 15
+! Seleciona o intervalo de interfaces FastEthernet de 0/10 a 0/15.
+
+SW_A(config-if-range)#switchport mode access
+! Define essas portas como portas de acesso (apenas uma VLAN por porta).
+
+SW_A(config-if-range)#switchport access vlan 30
+! Atribui a VLAN 30 como VLAN de acesso nas interfaces selecionadas.
+
+SW_A(config-if-range)#description VLAN 30 - Visitantes
+! Adiciona uma descrição à interface, útil para documentação e troubleshooting.
+
+! -----------------------------
+! Testes e Diagnóstico
+! -----------------------------
+
+SW_A#ping 192.168.0.1
+! Testa a conectividade com o IP 192.168.0.1. Útil para verificar o roteador ou gateway.
+
+SW_A#traceroute 192.168.0.1
+! Verifica o caminho que os pacotes estão percorrendo até o destino (útil para detectar problemas de rota).
+
+SW_A#show logging
+! Exibe os logs de eventos do sistema. Fundamental para diagnósticos.
+
+SW_A#debug ip icmp
+! Ativa debug para pacotes ICMP (ping), mostrando tráfego em tempo real no terminal.
+! **Cuidado**: Use com moderação em ambientes de produção. Pode gerar sobrecarga na CPU.
+
+! -----------------------------
+! Configuração SNMP - Cisco Catalyst 2960
+! -----------------------------
+
+SW_A#configure terminal
+! Entra no modo de configuração global.
+
+SW_A(config)#snmp-server community public RO
+! Cria a comunidade SNMP 'public' com permissão de leitura (Read-Only). Usada por ferramentas de monitoramento.
+
+SW_A(config)#snmp-server community snmp_rw RW
+! Cria a comunidade SNMP 'snmp_rw' com permissão de leitura e escrita (Read-Write). Deve ser usada com segurança.
+
+SW_A(config)#snmp-server contact admin@example.com
+! Define o contato responsável pelo equipamento, visível em consultas SNMP — útil para identificação e suporte técnico.
+
+SW_A(config)#snmp-server location example.local
+! Define a localização do equipamento para fins de identificação no monitoramento.
+
+SW_A(config)#end
+! Sai do modo de configuração.
+
+SW_A#write memory
+! Salva as configurações para manter após reinicialização.
+
+! -----------------------------
+! AVISO IMPORTANTE SOBRE SMARTPORTS
+! -----------------------------
+
+! ------------------------------------------------------------------
+! Atenção: Ao configurar portas 1 até 24 em uma VLAN (ex: VLAN 100)
+! e acessar via navegador (GUI), ao usar o recurso **Smartports**
+! e escolher o tipo "Cisco Access Point" ou "Desktop", a porta será
+! automaticamente revertida para VLAN 1.
+!
+! Isso pode causar perda de comunicação na VLAN configurada.
+! ------------------------------------------------------------------
