@@ -7,6 +7,16 @@
 ! NÃO utilize senhas reais ou informações de produção neste exemplo.
 ! ==========================================================
 
+! ------------------------------------------------------------------
+! ⚠️ Atenção sobre Smartports na interface Web:
+! Ao configurar portas 1 até 24 em uma VLAN (ex: VLAN 100),
+! se usar o recurso **Smartports** pela GUI e selecionar
+! "Cisco Access Point" ou "Desktop", a porta voltará para VLAN 1.
+!
+! Isso pode causar perda de conectividade com a VLAN correta.
+! Evite o uso de Smartports via navegador em ambientes configurados manualmente.
+! ------------------------------------------------------------------
+
 ! -----------------------------
 ! Acesso Inicial e Identificação do Switch
 ! -----------------------------
@@ -115,6 +125,15 @@ SW_A#show interface fa0/1 switchport
 SW_A#show interfaces trunk
 ! Lista as interfaces configuradas como trunk e suas VLANs permitidas.
 
+SW_A#show mac address-table interface FastEthernet 0/2
+! Para exibir os endereços MAC em uma interface específica.
+
+SW_A# show mac address-table
+! Para exibir todos os endereços MAC aprendidos pelo switch.
+
+SW_A# show mac address-table vlan X (número da vlan)
+! Para exibir os endereços MAC em uma VLAN específica
+
 ! -----------------------------
 ! Notas sobre VLANs Padrão
 ! -----------------------------
@@ -157,6 +176,9 @@ SW_A(config-vlan)#name REDE_ADMINISTRACAO
 ! -----------------------------
 ! Descrição de Portas Específicas
 ! -----------------------------
+
+SW_A#configure terminal
+! Acessa o modo de configuração global.
 
 SW_A(config)#interface fastethernet 0/2
 ! Acessa a porta FastEthernet 0/2.
@@ -253,16 +275,3 @@ SW_A(config)#end
 
 SW_A#write memory
 ! Salva as configurações para manter após reinicialização.
-
-! -----------------------------
-! AVISO IMPORTANTE SOBRE SMARTPORTS
-! -----------------------------
-
-! ------------------------------------------------------------------
-! Atenção: Ao configurar portas 1 até 24 em uma VLAN (ex: VLAN 100)
-! e acessar via navegador (GUI), ao usar o recurso **Smartports**
-! e escolher o tipo "Cisco Access Point" ou "Desktop", a porta será
-! automaticamente revertida para VLAN 1.
-!
-! Isso pode causar perda de comunicação na VLAN configurada.
-! ------------------------------------------------------------------
